@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+
+version=0.0.1
+pw=
+filename="$(whoami)_annex"
+
+#------------------------------------------------------------------------------
+# usage
+
+function usage {
+printf "
+SYNOPSIS
+    $(basename $0) [options]
+
+OPTIONS
+    -p <password>, --password <password>
+        specify password for current sudoer to avoid prompt
+
+    -f <filename>, --filename <filename>
+        name of file in /etc/sudoers.d, default: ${filename}
+
+    -h, --help
+        prints this
+
+VERSION
+    ${version}
+"
+}
+
+#------------------------------------------------------------------------------
+# parse args
+
+while (( $# )); do
+  token="$1"
+  shift
+  case "$token" in
+
+    -p|--password)
+      pw=$1
+      shift
+      ;;
+
+    -f|--filename)
+      filename=$1
+      shift
+      ;;
+
+    -h|--help)
+      usage
+      exit
+      ;;
+    *)
+      echo "Invalid option: $token"
+      usage
+      exit
+      ;;
+
+  esac
+done
+
+#------------------------------------------------------------------------------
+# update sudoers
+
+if [ -d /etc/sudoers.d ]; then
+  echo "Creating ${filename} in /etc/sudoers.d"
+  tmpfile=/tmp/$(basename $0)-$(uuidgen)
+  echo -e "$(whoami)\tALL=(ALL) NOPASSWD: ALL" > ${tmpfile}
+  chmod 0440 ${tmpfile}
+  if [ -n "${pw}" ]; then
+    sudo -k
+    echo "${pw}" | sudo -v -S 2> /dev/null
+  fi
+  sudo chown root:root ${tmpfile}
+  sudo mv ${tmpfile} /etc/sudoers.d/${filename}
+  sudo rm -rf ${tmpfile}
+  echo "Done"
+else
+  echo "/etc/sudoers.d does not exist"
+  exit
+fi
+
