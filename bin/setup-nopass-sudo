@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-version=0.0.1
+version=0.0.2
 pw=
 filename="$(whoami)_annex"
 
@@ -10,7 +10,7 @@ filename="$(whoami)_annex"
 function usage {
 printf "
 SYNOPSIS
-    $(basename $0) [options]
+    setup-nopass-sudo [options]
 
 OPTIONS
     -p <password>, --password <password>
