@@ -1,0 +1,11 @@
+== opsutil
+A simple set of devops utilities designed to streamline development of cloud-enabled applications on Debian-based systems.
+
+=== Utilities
+
+==== setup-nopass-sudo
+Sets up no-password sudo on the local machine
+
+=== Coming Soon
+Utilities to create Chef servers and clients
+
