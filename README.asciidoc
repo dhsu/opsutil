@@ -4,7 +4,15 @@ A simple set of devops utilities designed to streamline development of cloud-ena
 === Utilities
 
 ==== setup-nopass-sudo
-Sets up no-password sudo on the local machine
+Sets up no-password sudo on the local machine.
+
+To see help without installing:
+[source,bash]
+bash <(curl -s https://raw.github.com/dhsu/opsutil/master/bin/setup-nopass-sudo) -h
+
+To run without installing (you may add command-line args at the end. see help.):
+[source,bash]
+bash <(curl -s https://raw.github.com/dhsu/opsutil/master/bin/setup-nopass-sudo)
 
 === Coming Soon
 Utilities to create Chef servers and clients
