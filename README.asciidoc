@@ -42,12 +42,12 @@ and transfer.
 
 To see help:
 ----
-bash <(curl -s https://raw.github.com/dhsu/opsutil/master/bin/setup-chef-server) -h
+bash <(curl -s https://raw.github.com/dhsu/opsutil/master/bin/setup-knife-client) -h
 ----
 
 To run (see help for command line args):
 ----
-bash <(curl -s https://raw.github.com/dhsu/opsutil/master/bin/setup-chef-server)
+bash <(curl -s https://raw.github.com/dhsu/opsutil/master/bin/setup-knife-client)
 ----
 
 === Coming Soon
