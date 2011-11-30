@@ -1,0 +1,130 @@
+#!/usr/bin/env bash
+
+version=0.0.1
+client_name=$(whoami)
+cookbook_path=
+chef_server_url=
+validation_key_file=validation.pem
+
+#------------------------------------------------------------------------------
+# usage
+
+function usage {
+printf "
+SYNOPSIS
+    setup-knife-client [options]
+
+OPTIONS
+    -c <client name>, --client-name
+        specify the client name, default: $(whoami)
+
+    -b <cookbook path>, --cookbook-path <cookbook path>
+        specify a path for cookbooks, e.g. some-chef-repo/cookbooks
+
+    -u <chef server url>, --chef-server-url <chef server url>
+        specify url of the chef server, default: ${chef_server_url}
+
+    -v <validation key filename>, --validation-key <validation key filename>
+        specify file name of the validation key in ${HOME}/.chef
+        default: validation.pem
+
+    -h, --help
+        prints this
+
+VERSION
+    ${version}
+"
+}
+
+#------------------------------------------------------------------------------
+# parse args
+
+while (( $# )); do
+  token="$1"
+  shift
+  case "$token" in
+
+    -c|--client-name)
+      client_name=$1
+      shift
+      ;;
+
+    -b|--cookbook-path)
+      cookbook_path=$1
+      shift
+      ;;
+
+    -u|--chef-server-url)
+      chef_server_url=$1
+      shift
+      ;;
+
+    -v|--validation-key)
+      validation_key_file=$1
+      shift
+      ;;
+
+    -h|--help)
+      usage
+      exit
+      ;;
+
+    *)
+      echo "Invalid option: $token"
+      usage
+      exit
+      ;;
+
+  esac
+done
+
+#------------------------------------------------------------------------------
+# misc prerequisites
+
+# install curl
+sudo apt-get -y -q install curl openssh-client
+
+#------------------------------------------------------------------------------
+# install chef
+
+# add chef server 0.10 repo to apt sources list
+echo "deb http://apt.opscode.com/ `lsb_release -cs`-0.10 main" | sudo tee /etc/apt/sources.list.d/opscode.list
+curl -s http://apt.opscode.com/packages@opscode.com.gpg.key | sudo apt-key add -
+sudo apt-get update -q
+
+# ensure chef server url is set
+if [ -z "${chef_server_url}" ]; then
+read -p "Enter the chef server url (e.g. http://192.168.0.100:4000):" chef_server_url
+  echo
+fi
+
+# preseed chef install with some values
+# see http://ubuntuforums.org/showthread.php?t=867747 for discussion
+sudo apt-get install -y -q debconf-utils
+echo "chef chef/chef_server_url string ${chef_server_url}" | sudo debconf-set-selections
+
+# unattended chef install
+export DEBIAN_FRONTEND=noninteractive
+sudo apt-get install -y -q chef
+
+#------------------------------------------------------------------------------
+# configure knife client on the chef server
+
+mkdir -p ~/.chef
+cat > ~/.chef/knife.rb <<EOF
+current_dir = File.dirname(__FILE__)
+log_level                :info
+log_location             STDOUT
+node_name                '${client_name}'
+client_key               "#{current_dir}/${client_name}.pem"
+validation_client_name   'chef-validator'
+validation_key           "#{current_dir}/${validation_key_file}"
+chef_server_url          '${chef_server_url}'
+cache_type               'BasicFile'
+cache_options( :path => "#{ENV['HOME']}/.chef/checksums" )
+EOF
+
+if [ -n "${cookbook_path}" ]; then
+  echo "cookbook_path ['${cookbook_path}']" >> ~/.chef/knife.rb
+fi
+

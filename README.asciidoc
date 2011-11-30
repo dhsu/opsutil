@@ -33,6 +33,23 @@ To run (see help for command line args):
 bash <(curl -s https://raw.github.com/dhsu/opsutil/master/bin/setup-chef-server)
 ----
 
+==== setup-knife-client
+Turns the local machine into a knife client. This can be fully unattended by providing
+command line args. For a fully unattended install, you should also first run `setup-nopass-sudo`.
+You must remember to copy the client and validation keys to the ~/.chef folder.
+There will be a script provided in an upcoming release that automates key generation
+and transfer.
+
+To see help:
+----
+bash <(curl -s https://raw.github.com/dhsu/opsutil/master/bin/setup-chef-server) -h
+----
+
+To run (see help for command line args):
+----
+bash <(curl -s https://raw.github.com/dhsu/opsutil/master/bin/setup-chef-server)
+----
+
 === Coming Soon
-`setup-knife-client` to create knife clients that can interact with a chef server
+Script to setup client and validation keys
 
