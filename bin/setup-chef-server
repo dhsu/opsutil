@@ -20,7 +20,7 @@ OPTIONS
     -w <web ui password>, --webui-password <web ui password>
         specify password for the web ui
 
-    -u <chef server url>, -chef-server-url <chef server url>
+    -u <chef server url>, --chef-server-url <chef server url>
         specify url of the chef server, default: ${chef_server_url}
 
     -h, --help
