@@ -1,0 +1,134 @@
+#!/usr/bin/env bash
+
+version=0.0.1
+amqp_pw=
+chef_server_webui_pw=
+chef_server_url=http://127.0.0.1:4000
+
+#------------------------------------------------------------------------------
+# usage
+
+function usage {
+printf "
+SYNOPSIS
+    setup-chef-server [options]
+
+OPTIONS
+    -a <amqp password>, --amqp-password <amqp password>
+        specify password for amqp
+
+    -w <web ui password>, --webui-password <web ui password>
+        specify password for the web ui
+
+    -u <chef server url>, -chef-server-url <chef server url>
+        specify url of the chef server, default: ${chef_server_url}
+
+    -h, --help
+        prints this
+
+VERSION
+    ${version}
+"
+}
+
+#------------------------------------------------------------------------------
+# parse args
+
+while (( $# )); do
+  token="$1"
+  shift
+  case "$token" in
+
+    -a|--amqp-password)
+      amqp_pw=$1
+      shift
+      ;;
+
+    -w|--webui-password)
+      chef_server_webui_pw=$1
+      shift
+      ;;
+
+    -u|--chef-server-url)
+      chef_server_url=$1
+      shift
+      ;;
+
+    -h|--help)
+      usage
+      exit
+      ;;
+    *)
+      echo "Invalid option: $token"
+      usage
+      exit
+      ;;
+
+  esac
+done
+
+#------------------------------------------------------------------------------
+# misc prerequisites
+
+# install curl
+if [ -z "$(which curl)" ]; then
+  sudo apt-get -y -q install curl
+fi
+
+#------------------------------------------------------------------------------
+# install chef server
+
+# add chef server 0.10 repo to apt sources list
+echo "deb http://apt.opscode.com/ `lsb_release -cs`-0.10 main" | sudo tee /etc/apt/sources.list.d/opscode.list
+curl -s http://apt.opscode.com/packages@opscode.com.gpg.key | sudo apt-key add -
+sudo apt-get update -q
+
+# ensure amqp and webui passwords are set
+if [ -z "${amqp_pw}" ]; then
+  read -s -p "Enter a password for amqp:" amqp_pw
+  echo
+fi
+if [ -z "${chef_server_webui_pw}" ]; then
+  read -s -p "Enter a password for the web ui:" chef_server_webui_pw
+  echo
+fi
+
+# preseed chef server install with some values
+# see http://ubuntuforums.org/showthread.php?t=867747 for discussion
+sudo apt-get install -y -q debconf-utils
+echo "chef-server-webui chef-server-webui/admin_password password ${chef_server_webui_pw}
+chef-solr chef-solr/amqp_password password ${amqp_pw}
+chef chef/chef_server_url string ${chef_server_url}
+" | sudo debconf-set-selections
+
+# unattended chef server install
+export DEBIAN_FRONTEND=noninteractive
+sudo apt-get install -y -q chef chef-server
+
+#------------------------------------------------------------------------------
+# configure knife client on the chef server
+
+mkdir -p ~/.chef ~/chef_repo/.chef
+sudo cp /etc/chef/validation.pem /etc/chef/webui.pem ~/.chef
+sudo chown -R $(whoami):$(whoami) ~/.chef ~/chef_repo/.chef
+
+sudo apt-get install -y -q expect
+knife_config_exp_file=/tmp/knife-config.exp
+cat > ${knife_config_exp_file} <<EOF
+#!/usr/bin/expect -f
+set timeout 10
+spawn knife configure -i
+expect "Where should I put the config file?" { send "\n" }
+expect "Please enter the chef server URL" { send "http://127.0.0.1:4000\n" }
+expect "Please enter a clientname for the new client" { send "\n" }
+expect "Please enter the existing admin clientname" { send "\n" }
+expect "Please enter the location of the existing admin client's private key" { send "${HOME}/.chef/webui.pem\n" }
+expect "Please enter the validation clientname" { send "\n" }
+expect "Please enter the location of the validation key" { send "${HOME}/.chef/validation.pem\n" }
+expect "Please enter the path to a chef repository" { send "${HOME}/chef_repo\n" }
+interact
+EOF
+chmod +x ${knife_config_exp_file}
+${knife_config_exp_file}
+rm ${knife_config_exp_file}
+

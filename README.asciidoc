@@ -1,11 +1,13 @@
 == opsutil
-A simple set of devops utilities designed to streamline development of cloud-enabled applications on Debian-based systems.
+A simple set of devops utilities designed to streamline development of cloud-enabled applications
+on Debian-based systems.
 
 
 === Utilities
 
 ==== setup-nopass-sudo
-Sets up no-password sudo on the local machine.
+Sets up no-password sudo on the local machine. This can be fully unattended by providing
+command line args. See help.
 
 To see help without installing:
 ----
@@ -17,6 +19,19 @@ To run without installing (you may add command-line args at the end. see help.):
 bash <(curl -s https://raw.github.com/dhsu/opsutil/master/bin/setup-nopass-sudo)
 ----
 
+==== setup-chef-server
+Turns the local machine into a chef server. This can be fully unattended by providing
+command line args. For a fully unattended install, you should also first run `setup-nopass-sudo`.
+
+To see help without installing:
+----
+bash <(curl -s https://raw.github.com/dhsu/opsutil/master/bin/setup-chef-server) -h
+----
+
+To run without installing (you may add command-line args at the end. see help.):
+----
+bash <(curl -s https://raw.github.com/dhsu/opsutil/master/bin/setup-chef-server)
+----
 
 === Coming Soon
 Utilities to create Chef servers and clients
