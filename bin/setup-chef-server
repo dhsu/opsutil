@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-version=0.0.1
+version=0.0.2
 amqp_pw=
 chef_server_webui_pw=
 chef_server_url=http://127.0.0.1:4000
@@ -70,10 +70,7 @@ done
 #------------------------------------------------------------------------------
 # misc prerequisites
 
-# install curl
-if [ -z "$(which curl)" ]; then
-  sudo apt-get -y -q install curl
-fi
+sudo apt-get -y -q install curl ssh
 
 #------------------------------------------------------------------------------
 # install chef server
