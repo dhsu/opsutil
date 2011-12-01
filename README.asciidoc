@@ -6,51 +6,53 @@ cloud-enabled applications on Debian-based systems.
 === Utilities
 
 
-.setup-nopass-sudo
-****
+====setup-nopass-sudo
 Sets up passwordless sudo on the local machine, and can run unattended if given
 sufficient command line options. Many IaaS cloud providers such as Amazon EC2
-enable passwordless sudo default. Examples:
+enable passwordless sudo default.
+----
+# examples
 
- # display help
- bash <(curl -s https://raw.github.com/dhsu/opsutil/master/bin/setup-nopass-sudo) -h
+# display help
+bash <(curl -s https://raw.github.com/dhsu/opsutil/master/bin/setup-nopass-sudo) -h
 
- # run with prompts
- bash <(curl -s https://raw.github.com/dhsu/opsutil/master/bin/setup-nopass-sudo)
-****
+# run with prompts
+bash <(curl -s https://raw.github.com/dhsu/opsutil/master/bin/setup-nopass-sudo)
+----
 
 
-.setup-chef-server
-****
+====setup-chef-server
 Sets up the local machine as a chef server, and can run unattended if given
 sufficient command line options and `setup-nopass-sudo` is run beforehand.
 Examples:
+----
+# examples
 
- # display help
- bash <(curl -s https://raw.github.com/dhsu/opsutil/master/bin/setup-chef-server) -h
+# display help
+bash <(curl -s https://raw.github.com/dhsu/opsutil/master/bin/setup-chef-server) -h
  
- # run with prompts
- bash <(curl -s https://raw.github.com/dhsu/opsutil/master/bin/setup-chef-server)
-****
+# run with prompts
+bash <(curl -s https://raw.github.com/dhsu/opsutil/master/bin/setup-chef-server)
+----
 
 
-.setup-knife-client
-****
+====setup-knife-client
 Sets up the local machine as a knife client, and can run unattended if given
 sufficient command line options and `setup-nopass-sudo` is run beforehand.
 
-IMPORTANT: For now, you must manually copy the client and validation keys to
-           the `~/.chef` folder. There will be a script provided in an upcoming
-           release that automates key generation and transfer.
+*NOTE:* For now, you must manually copy the client and validation keys to
+the `~/.chef` folder. There will be a script provided in an upcoming release
+that automates key generation and transfer.
 
-Examples:
+----
+# examples
 
- # display help
- bash <(curl -s https://raw.github.com/dhsu/opsutil/master/bin/setup-knife-client) -h
+# display help
+bash <(curl -s https://raw.github.com/dhsu/opsutil/master/bin/setup-knife-client) -h
 
- # run with prompts
- bash <(curl -s https://raw.github.com/dhsu/opsutil/master/bin/setup-knife-client)
-****
+# run with prompts
+bash <(curl -s https://raw.github.com/dhsu/opsutil/master/bin/setup-knife-client)
+----
 
 
 === Coming Soon
