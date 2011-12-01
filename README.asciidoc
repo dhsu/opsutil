@@ -6,7 +6,7 @@ cloud-enabled applications on Debian-based systems.
 === Utilities
 
 
-====setup-nopass-sudo
+==== setup-nopass-sudo
 Sets up passwordless sudo on the local machine, and can run unattended if given
 sufficient command line options. Many IaaS cloud providers such as Amazon EC2
 enable passwordless sudo default.
@@ -21,7 +21,7 @@ bash <(curl -s https://raw.github.com/dhsu/opsutil/master/bin/setup-nopass-sudo)
 ----
 
 
-====setup-chef-server
+==== setup-chef-server
 Sets up the local machine as a chef server, and can run unattended if given
 sufficient command line options and `setup-nopass-sudo` is run beforehand.
 Examples:
@@ -36,7 +36,7 @@ bash <(curl -s https://raw.github.com/dhsu/opsutil/master/bin/setup-chef-server)
 ----
 
 
-====setup-knife-client
+==== setup-knife-client
 Sets up the local machine as a knife client, and can run unattended if given
 sufficient command line options and `setup-nopass-sudo` is run beforehand.
 
