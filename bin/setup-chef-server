@@ -80,7 +80,7 @@ echo "deb http://apt.opscode.com/ `lsb_release -cs`-0.10 main" | sudo tee /etc/a
 curl -s http://apt.opscode.com/packages@opscode.com.gpg.key | sudo apt-key add -
 sudo apt-get update -q
 
-# ensure amqp and webui passwords are set
+# make sure amqp and webui passwords are set
 if [ -z "${amqp_pw}" ]; then
   read -s -p "Enter a password for amqp:" amqp_pw
   echo

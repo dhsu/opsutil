@@ -49,6 +49,7 @@ while (( $# )); do
       usage
       exit
       ;;
+
     *)
       echo "Invalid option: $token"
       usage
